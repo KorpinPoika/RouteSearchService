@@ -1,0 +1,1 @@
+docker build -f ./RouteProvider/Dockerfile . -t route-provider:1.0
