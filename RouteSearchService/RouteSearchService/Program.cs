@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using RouteSearchService;
 using RouteSearchService.Services;
 using Refit;
+using IConfiguration = RouteSearchService.Services.IConfiguration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddApiVersioning(opt => {
 
 builder.Services.AddHostedService<RouteCacheService>();
 
+builder.Services.AddScoped<IConfiguration, Configuration>();
 builder.Services.AddScoped<IRouteProvider, RouteProviderOne>();
 builder.Services.AddScoped<IRouteProvider, RouteProviderTwo>();
 builder.Services.AddScoped<ISearchService, SearchService>();

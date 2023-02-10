@@ -4,6 +4,7 @@ using Refit;
 using RouteSearchService.Dtos.SearchService;
 using RouteSearchService.RouteProviders;
 using RouteSearchService.Services;
+using IConfiguration = RouteSearchService.Services.IConfiguration;
 
 namespace RouteSearchService.Controllers;
 
@@ -12,13 +13,15 @@ namespace RouteSearchService.Controllers;
 [ApiVersion("1.0")]
 public class RouteSearchController : ControllerBase
 {
+	private readonly IConfiguration _configuration;
 	private readonly ISearchService _searchService;
 	private readonly ILogger<RouteSearchController> _logger;
 
-	public RouteSearchController(ILogger<RouteSearchController> logger, ISearchService searchService)
+	public RouteSearchController(ILogger<RouteSearchController> logger, IConfiguration configuration, ISearchService searchService)
 	{
 		_logger = logger;
 		_searchService = searchService;
+		_configuration = configuration;
 	}
 
 	[MapToApiVersion("1.0")]
@@ -27,7 +30,7 @@ public class RouteSearchController : ControllerBase
 	{
 		try
 		{
-			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(Config.SearchTimeOut));
+			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_configuration.SearchTimeOut));
 			var response = await _searchService.SearchAsync(request, cts.Token);
 	
 			return Ok(response);
@@ -45,7 +48,7 @@ public class RouteSearchController : ControllerBase
 	{
 		try
 		{
-			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(Config.PingTimeout));
+			using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(_configuration.PingTimeout));
 			var result = await _searchService.IsAvailableAsync(cts.Token);
 
 			return Ok(result);
