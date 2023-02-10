@@ -21,8 +21,8 @@ public static class SearchServiceExtensions
 
 			sr.MinPrice = sr.Routes.Select(r => r.Price).Min();
 			sr.MaxPrice = sr.Routes.Select(r => r.Price).Max();
-			sr.MinMinutesRoute = routesDuration.Min().Minutes;
-			sr.MaxMinutesRoute = routesDuration.Max().Minutes;
+			sr.MinMinutesRoute = Convert.ToInt32(routesDuration.Min().TotalMinutes);
+			sr.MaxMinutesRoute = Convert.ToInt32(routesDuration.Max().TotalMinutes);
 		}
 
 		return sr;
@@ -45,9 +45,8 @@ public static class SearchServiceExtensions
 		return dest;
 	}
 
-	public static SearchResponse Filter(this SearchResponse sr, SearchFilters filters)
-	{
-		sr.Routes = sr.Routes.Where(
+	public static SearchResponse Filter(this SearchResponse sr, SearchFilters filters) => new SearchResponse {
+		Routes = sr.Routes.Where(
 			r => filters.DestinationDateTime?.With(ddt => r.DestinationDateTime <= ddt) ?? true	
 		)
 		.Where(
@@ -56,10 +55,10 @@ public static class SearchServiceExtensions
 		.Where(
 			r => filters.MinTimeLimit?.With(mtl => r.TimeLimit <= mtl) ?? true	
 		)	
-		.ToArray();	
-
-		return sr.CalculateStatistic();
+		.ToArray()
 	}
+	.CalculateStatistic();
+
 
 	public static string GetKey(this Route r) => $"{r.Origin}-{r.Destination}-{r.OriginDateTime}-{r.DestinationDateTime}-{r.Price}-{r.TimeLimit}";
 }

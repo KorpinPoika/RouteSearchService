@@ -35,15 +35,15 @@ public class ProviderTwoController: PingableController
 					Routes = new [] {
 						new ProviderTwoRoute{
 							Departure = new ProviderTwoPoint {
-								Point = "Moscow",
+								Point = "Novgorod",
 								Date = DateTime.Parse("01.01.2023")
 							},
 							Arrival = new ProviderTwoPoint {
-								Point = "Adler",
-								Date = DateTime.Parse("01.02.2023")
+								Point = "Smolensk",
+								Date = DateTime.Parse("03.01.2023")
 							},
-							Price = 1000,
-							TimeLimit = DateTime.Parse("01.03.2023")
+							Price = 2000,
+							TimeLimit = DateTime.Parse("10.02.2023")
 						}
 					}
 				}
