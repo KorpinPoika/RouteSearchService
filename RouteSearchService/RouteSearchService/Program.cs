@@ -25,20 +25,23 @@ builder.Services.AddApiVersioning(opt => {
 	}
 );
 
-builder.Services.AddHostedService<CacheCleanerJob>();
-
 builder.Services.AddScoped<IConfiguration, Configuration>();
+builder.Services.AddSingleton<IRouteCacheService, RouteCacheService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IRouteProvider, RouteProviderOne>();
 builder.Services.AddScoped<IRouteProvider, RouteProviderTwo>();
-builder.Services.AddScoped<ISearchService, SearchService>();
+
+
+builder.Services.AddHostedService<CacheCleanerJob>();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+	// app.UseSwagger();
+	// app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

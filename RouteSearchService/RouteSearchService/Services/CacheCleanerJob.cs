@@ -17,5 +17,4 @@ public class CacheCleanerJob: BackgroundService
 			_cacheService.CleanExpiredItems();
 		}
 	}
-	
 }
