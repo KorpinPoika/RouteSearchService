@@ -30,10 +30,12 @@ public static class SearchServiceExtensions
 
 	public static SearchResponse Merge(this SearchResponse dest, SearchResponse src)
 	{
-		if (src.Routes.Any())
+		if (dest.Routes.Any() || src.Routes.Any())
 		{
+			var destKeys = dest.Routes.Select(r => r.GetKey()).ToList();
 			var routesList = dest.Routes.ToList();
-			routesList.AddRange(src.Routes);
+			
+			routesList.AddRange(src.Routes.Where(r => !destKeys.Contains(r.GetKey())));
 		
 			dest.Routes = routesList.ToArray();
 			dest.MinPrice = (src.MinPrice < dest.MinPrice) ? src.MinPrice : dest.MinPrice;

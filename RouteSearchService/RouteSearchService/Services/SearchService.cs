@@ -36,8 +36,10 @@ public class SearchService : ISearchService
 		if (result.IsEmpty()) {
 			return new SearchResponse().Empty();
 		}
-		
-		AddRoutesInCacheAsync(result!.Routes);
+
+		if (request.Filters?.OnlyCached != true) {
+			AddRoutesInCacheAsync(result!.Routes);
+		}
 		
 		return request.Filters?.With(f => result.Filter(f)) ?? result;
 	}
