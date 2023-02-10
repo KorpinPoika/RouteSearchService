@@ -25,7 +25,7 @@ builder.Services.AddApiVersioning(opt => {
 	}
 );
 
-builder.Services.AddHostedService<RouteCacheService>();
+builder.Services.AddHostedService<CacheCleanerJob>();
 
 builder.Services.AddScoped<IConfiguration, Configuration>();
 builder.Services.AddScoped<IRouteProvider, RouteProviderOne>();

@@ -25,7 +25,7 @@ public class SearchServiceTests
 		provider1.Setup(x => x.PingAsync(It.IsAny<CancellationToken>())).ReturnsAsync(true);
 		provider2.Setup(x => x.PingAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-		var searchService = new SearchService(_logger, It.IsAny<IServiceProvider>(), new[] {provider1.Object, provider2.Object});
+		var searchService = new SearchService(_logger, It.IsAny<IRouteCacheService>(), new[] {provider1.Object, provider2.Object});
 
 		var result = await searchService.IsAvailableAsync(It.IsAny<CancellationToken>());
 		
@@ -43,7 +43,7 @@ public class SearchServiceTests
 		provider1.Setup(x => x.PingAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 		provider2.Setup(x => x.PingAsync(It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
-		var searchService = new SearchService(_logger, It.IsAny<IServiceProvider>(), new[] {provider1.Object, provider2.Object});
+		var searchService = new SearchService(_logger, It.IsAny<IRouteCacheService>(), new[] {provider1.Object, provider2.Object});
 
 		var result = await searchService.IsAvailableAsync(It.IsAny<CancellationToken>());
 		

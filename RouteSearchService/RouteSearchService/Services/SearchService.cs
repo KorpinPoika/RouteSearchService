@@ -11,10 +11,10 @@ public class SearchService : ISearchService
 	private readonly IRouteCacheService _cache;
 	private readonly ICollection<IRouteProvider> _routeProviders;
 
-	public SearchService(ILogger<SearchService> logger, IServiceProvider sp, IEnumerable<IRouteProvider> routeProviders)
+	public SearchService(ILogger<SearchService> logger, IRouteCacheService cacheService, IEnumerable<IRouteProvider> routeProviders)
 	{
 		_logger = logger;
-		_cache = sp.GetServices<IHostedService>().OfType<RouteCacheService>().Single();
+		_cache = cacheService;
 		_routeProviders = routeProviders.ToList();
 	}
 
@@ -37,7 +37,7 @@ public class SearchService : ISearchService
 			return new SearchResponse().Empty();
 		}
 		
-		AddRoutesInCacheAsync(result.Routes);
+		AddRoutesInCacheAsync(result!.Routes);
 		
 		return request.Filters?.With(f => result.Filter(f)) ?? result;
 	}

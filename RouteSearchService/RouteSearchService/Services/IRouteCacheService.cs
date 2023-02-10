@@ -6,5 +6,8 @@ namespace RouteSearchService.Services;
 public interface IRouteCacheService
 {
 	void TryAddRoutes(IEnumerable<Route> routes);
+	
 	IEnumerable<Route> Find(SearchRequest sr);
+
+	void CleanExpiredItems();
 }

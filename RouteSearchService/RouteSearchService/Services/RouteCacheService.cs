@@ -4,13 +4,10 @@ using Route = RouteSearchService.Dtos.SearchService.Route;
 
 namespace RouteSearchService.Services;
 
-public class RouteCacheService: BackgroundService, IRouteCacheService
+public class RouteCacheService: IRouteCacheService
 {
 	private readonly ReaderWriterLockSlim _lockSlim = new(LockRecursionPolicy.NoRecursion);
-	private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(30));
-
 	private readonly ILogger<RouteCacheService> _logger;
-
 	private readonly IDictionary<string, Route> _cache = new Dictionary<string, Route>();
 
 	public RouteCacheService(ILogger<RouteCacheService> logger)
@@ -61,17 +58,9 @@ public class RouteCacheService: BackgroundService, IRouteCacheService
 		{
 			_lockSlim.ExitReadLock();
 		}
-	} 
-
-	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-	{
-		while (await _timer.WaitForNextTickAsync(stoppingToken) && !stoppingToken.IsCancellationRequested)
-		{
-			RemoveExpiredItems();
-		}
 	}
 
-	private void RemoveExpiredItems()
+	public void CleanExpiredItems()
 	{
 		try
 		{
