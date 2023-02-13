@@ -46,12 +46,28 @@ public class SearchService : ISearchService
 
 	public async Task<bool> IsAvailableAsync(CancellationToken cancellationToken)
 	{
-		var pingTasks = _routeProviders.Select(p => p.PingAsync(cancellationToken)).ToList();
-		var results = await Task.WhenAll(pingTasks);
+		var tcs = new TaskCompletionSource<bool>();
 		
-		_logger.LogDebug(Join(",", results));
-		
-		return results.Any(x => x);
+		var pingTasks = _routeProviders.Select(p => MakePingCallWithContinuation(p, tcs, cancellationToken)).ToList();
+		await Task.WhenAny(tcs.Task, Task.WhenAll(pingTasks));
+
+		if (tcs.Task.IsCompleted) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private Task MakePingCallWithContinuation(IRouteProvider p, TaskCompletionSource<bool> tcs, CancellationToken ct)
+	{
+		return p.PingAsync(ct).ContinueWith(
+			r => {
+				if (r.Result) {
+					tcs.SetResult(true);
+				}
+			}
+			, ct
+		);
 	}
 
 	private async ValueTask<IEnumerable<SearchResponse>> SearchByProvidersAsync(SearchRequest request, CancellationToken cancellationToken)
